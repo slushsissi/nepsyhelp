@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Pesäkolo – Lempeä arjen ja mielen tuki</title>
   <style>
-
     :root {
       --bg: #EBF4F0;
       --surface: #FFFFFF;
@@ -87,7 +86,7 @@
     }
 
     /* =========================================================================
-       2. GOLDEN COIN BADGES (NO PARENTHESES OR PLUS SIGNS)
+       2. GOLDEN COIN BADGES
        ========================================================================= */
     .coin {
       display: inline-flex;
@@ -264,7 +263,7 @@
     }
 
     /* =========================================================================
-       5. FIVE CLEAR TOP-LEVEL TABS (MOBILE-FRIENDLY)
+       5. FIVE CLEAR TOP-LEVEL TABS
        ========================================================================= */
     .nav-tabs {
       display: grid;
@@ -458,7 +457,7 @@
     }
 
     /* =========================================================================
-       7. TAB 1: TEOT (5-STEP OUTING TRAIL, 28 PICTURE CARDS, DAY TASKS)
+       7. TAB 1: TEOT (START-TO-FINISH CARDS, OUTING TRAIL, PICTURE CARDS, TASKS)
        ========================================================================= */
     .outing-card {
       background: var(--surface-tint);
@@ -560,6 +559,111 @@
       color: #0D1F18;
     }
 
+    /* Start-to-Finish Sequence Picture Cards */
+    .seq-progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+    }
+
+    .seq-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #F59E0B);
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+
+    .seq-cards-track {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 580px) {
+      .seq-cards-track {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .seq-pic-card {
+      position: relative;
+      background: #FFFDF8;
+      border: 2px solid #28362F;
+      border-radius: 14px;
+      padding: 8px 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px;
+      cursor: pointer;
+      color: #14261E;
+      box-shadow: 2px 2px 0 rgba(40, 54, 47, 0.16);
+      transition: transform 0.14s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.2s ease;
+      text-align: center;
+    }
+
+    .seq-pic-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .seq-pic-card:active {
+      transform: scale(0.96);
+    }
+
+    .seq-pic-card.next-up {
+      border-color: #0E8760;
+      box-shadow: 0 0 0 3px rgba(14, 135, 96, 0.22);
+    }
+
+    .seq-pic-card.step-done {
+      background: #D4F3E4;
+      border-color: #0E8760;
+    }
+
+    .seq-pic-card.is-last {
+      border-style: dashed;
+      border-width: 2.2px;
+    }
+
+    .seq-pic-card.is-last.last-colored {
+      border-style: solid;
+      border-width: 2.5px;
+      transform: scale(1.02);
+      box-shadow: 0 6px 16px rgba(196, 104, 16, 0.25);
+    }
+
+    .seq-step-badge {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #3B5246;
+    }
+
+    .seq-pic-card-svg {
+      width: 92px;
+      height: 58px;
+    }
+
+    .seq-pic-card-svg svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .seq-pic-card-label {
+      font-size: 0.76rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
     /* One-Tap Picture Cards Grid */
     .pic-cards-grid {
       display: grid;
@@ -626,8 +730,15 @@
       padding: 8px 10px;
     }
     .task-row.done {
-      opacity: 0.62;
+      opacity: 0.68;
       border-color: var(--accent);
+    }
+
+    .task-row.chain-task-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      opacity: 1;
     }
 
     .task-main {
@@ -661,6 +772,17 @@
     }
     .task-row.done .task-title {
       text-decoration: line-through;
+    }
+
+    .mini-chain-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    @media (max-width: 540px) {
+      .mini-chain-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .del-btn {
@@ -1371,9 +1493,31 @@
     </nav>
 
     <!-- ===================================================================
-         TAB 1: ⚡ TEOT (DOING & EVERYDAY TASKS)
+         TAB 1: ⚡ TEOT (START-TO-FINISH CARDS, OUTING TRAIL, PICTURE CARDS, TASKS)
          =================================================================== -->
     <main class="tab-panel active" id="panel-teot">
+      <!-- Start-to-Finish Action Picture Card Sequences -->
+      <section class="card">
+        <div class="card-header">
+          <h2 class="card-title">🪜 Alusta loppuun -kuvakortit</h2>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-soft" id="addSeqToDayBtn" style="padding: 5px 11px; font-size: 0.75rem;">➕ Lisää ketju päivälle</button>
+            <button type="button" class="btn btn-soft" id="resetSeqBtn" style="padding: 5px 11px; font-size: 0.75rem;">🔄 Aloita alusta</button>
+          </div>
+        </div>
+        <p class="card-desc">
+          Napauta kuvakortteja vaihe vaiheelta alusta loppuun. <strong>Viimeistä korttia klikatessa kortti vaihtaa väriä!</strong>
+        </p>
+
+        <div class="pills-row" id="seqChainPills"></div>
+
+        <div class="seq-progress-bar">
+          <div class="seq-progress-fill" id="seqProgressFill"></div>
+        </div>
+
+        <div class="seq-cards-track" id="seqCardsTrack"></div>
+      </section>
+
       <!-- Visual Forest Outing Trail -->
       <section class="card">
         <div class="outing-card">
@@ -1452,10 +1596,9 @@
     </main>
 
     <!-- ===================================================================
-         TAB 2: 💬 TUKI (5 DECKS + 100 FACTS + STARTING AIDS)
+         TAB 2: 💬 TUKI (5 DECKS + 100 FACTS + STARTING TIMERS)
          =================================================================== -->
     <main class="tab-panel" id="panel-tuki">
-      <!-- 5 Card Decks -->
       <section class="card">
         <div class="card-header">
           <h2 class="card-title">💬 Tsemppi & Tieto</h2>
@@ -1490,7 +1633,6 @@
 
         <div class="starter-stage">
           <div class="starter-visuals">
-            <!-- Visual Water Droplet Chamber -->
             <div class="drop-chamber" title="Vesipisara">
               <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
                 <defs>
@@ -1507,7 +1649,6 @@
               </svg>
             </div>
 
-            <!-- Spark Orb -->
             <div class="spark-orb" id="sparkOrb">
               <span style="font-size: 1.4rem;">💥</span>
               <span style="font-size: 0.78rem;">Kipinä</span>
@@ -1531,7 +1672,6 @@
          TAB 3: 🌊 TUNNE (BREATHING SPHERE, RAIN, STIM BUBBLES, DIARY)
          =================================================================== -->
     <main class="tab-panel" id="panel-tunne">
-      <!-- Progressive Blue Glassy Breathing Sphere (4s -> 5s -> 6s) -->
       <section class="card">
         <div class="card-header">
           <h2 class="card-title">🌸 Hengitysharjoitus</h2>
@@ -1551,7 +1691,6 @@
           </div>
         </div>
 
-        <!-- 18 Interactive Stim Bubbles -->
         <div class="subbox">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <strong style="font-size: 0.86rem;">🫧 Aistikuplat <span class="coin">1</span></strong>
@@ -1561,7 +1700,6 @@
         </div>
       </section>
 
-      <!-- Visual Emotion Diary -->
       <section class="card">
         <h2 class="card-title">📖 Tunnepäiväkirja</h2>
         <p class="card-desc">Valitse hymiö, voimavaratähdet, sanoja tai väritä oloasi vapaasti. Tallentamisesta saat <span class="coin">10</span></p>
@@ -1607,14 +1745,12 @@
          TAB 4: 📖 TARINA (3 STAR GOALS, MEMORY DIARY, DREAM BOOK)
          =================================================================== -->
     <main class="tab-panel" id="panel-tarina">
-      <!-- 3 Big Star Goals -->
       <section class="card">
         <h2 class="card-title">⭐ Kolme suurinta tähtitavoitetta</h2>
         <p class="card-desc">Kirjoita tähän kolme tärkeää tavoitetta – ne näkyvät palkintomaailmassa aarrearkulla ja taivaalla.</p>
         <div id="starGoalsList" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </section>
 
-      <!-- Past Memory Diary & Future Dream Book -->
       <section class="card">
         <h2 class="card-title">📚 Muistelupäiväkirja & Haavekirja</h2>
         <p class="card-desc">Tallenna tärkeitä muistoja menneisyydestä tai kirjaa unelmia tulevaisuuden haavekirjaan.</p>
@@ -1661,7 +1797,6 @@
           🧭 <strong>Pelillistetty motivoimaan:</strong> Aina kun teet oikeassa elämässä tehtävän, palkitse itsesi kolikoilla. <strong>Älä fuskaa!</strong> Eniten kolikoita saat etukäteen kouluun tai töihin lähdöstä <span class="coin">100</span> sekä siivoamisesta <span class="coin">95</span>.
         </div>
 
-        <!-- Petting Bar -->
         <div class="pet-interaction-bar">
           <div style="display: flex; align-items: center; gap: 10px;">
             <div id="stagePetPreview" style="width: 56px; height: 50px;"></div>
@@ -1673,14 +1808,12 @@
           <button type="button" class="btn btn-primary" id="petStageBtn">🐾 Silittele kaveria <span class="coin">15</span></button>
         </div>
 
-        <!-- Bright Dedicated Visual World Stage -->
         <div class="world-stage-frame" id="worldStageFrame">
           <div class="stage-goals-overlay" id="stageGoalsOverlay"></div>
           <div class="stage-anim-layer" id="stageAnimLayer"></div>
           <div id="stageSvgContainer" style="width: 100%; height: 100%;"></div>
         </div>
 
-        <!-- World Furniture & Item Shop -->
         <div class="subbox">
           <strong style="font-size: 0.9rem;">🎨 Sisusta ja hanki palkintoja kolikoilla</strong>
           <div class="shop-grid" id="worldShopGrid"></div>
@@ -1887,7 +2020,7 @@
     ];
 
     // =========================================================================
-    // 3. STICK-FIGURE SVG ILLUSTRATIONS (28 PICTURE CARDS)
+    // 3. STICK-FIGURE SVG ILLUSTRATIONS (PICTURE CARDS & START-TO-FINISH STEPS)
     // =========================================================================
     function getComicSVG(key, isDone = false) {
       const s = "#223029", skin = "#FFE8D6", acc = "#0E8760", w = "#0A72B5", warm = "#C46810";
@@ -1913,6 +2046,7 @@
         dishwasher_out: `<rect x="58" y="24" width="30" height="34" rx="3" fill="#E9ECEF" stroke="${s}" stroke-width="2"/><ellipse cx="42" cy="23" rx="8" ry="3.5" fill="#FFF" stroke="${s}" stroke-width="1.8"/>${person(24)}<polyline points="24,31 34,26 39,24" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         laundry_in: `<rect x="52" y="20" width="36" height="38" rx="4" fill="#E8ECE9" stroke="${s}" stroke-width="2"/><circle cx="70" cy="40" r="11" fill="#BDE0FE" stroke="${s}" stroke-width="2"/><path d="M 41 37 Q 54 33 65 39" fill="none" stroke="${warm}" stroke-width="4" stroke-linecap="round"/>${person(26)}<polyline points="26,30 40,33 50,37" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         laundry_out: `<rect x="56" y="22" width="32" height="36" rx="4" fill="#E8ECE9" stroke="${s}" stroke-width="2"/><circle cx="72" cy="41" r="10" fill="#FFF" stroke="${s}" stroke-width="2"/><polygon points="34,37 50,37 47,47 37,47" fill="#D4A373" stroke="${s}" stroke-width="1.8"/>${person(22)}<polyline points="22,31 32,39 36,41" fill="none" stroke="${s}" stroke-width="2.2"/>`,
+        laundry_hang: `<line x1="52" y1="22" x2="90" y2="22" stroke="${s}" stroke-width="2"/><line x1="56" y1="22" x2="52" y2="58" stroke="${s}" stroke-width="2"/><line x1="86" y1="22" x2="90" y2="58" stroke="${s}" stroke-width="2"/><rect x="61" y="23" width="10" height="16" rx="1.5" fill="#93C5FD" stroke="${s}" stroke-width="1.4"/><rect x="74" y="23" width="9" height="14" rx="1.5" fill="#FDE68A" stroke="${s}" stroke-width="1.4"/>${person(25)}<polyline points="25,31 39,28 56,25" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         table: `<rect x="46" y="38" width="44" height="5" rx="2" fill="#BC8A5F" stroke="${s}" stroke-width="1.8"/><line x1="52" y1="43" x2="52" y2="59" stroke="${s}" stroke-width="2"/><line x1="84" y1="43" x2="84" y2="59" stroke="${s}" stroke-width="2"/><rect x="74" y="30" width="9" height="8" rx="1.5" fill="${acc}" stroke="${s}" stroke-width="1.5"/>${person(26)}<polyline points="26,30 40,34 54,35" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         floor: `<line x1="8" y1="59" x2="92" y2="59" stroke="${s}" stroke-width="1.8"/><line x1="36" y1="27" x2="56" y2="55" stroke="#BC8A5F" stroke-width="2.4"/><polygon points="50,53 62,53 65,59 48,59" fill="#E9C46A" stroke="${s}" stroke-width="1.6"/>${person(25)}<polyline points="25,30 36,33 43,37" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         trash: `<rect x="66" y="33" width="18" height="25" rx="2" fill="#8D99AE" stroke="${s}" stroke-width="1.8"/><line x1="64" y1="33" x2="86" y2="33" stroke="${s}" stroke-width="2.2"/><path d="M 42 40 Q 37 46 40 53 Q 46 56 51 52 Q 53 45 48 40 Z" fill="#495057" stroke="${s}" stroke-width="1.6"/>${person(26)}<polyline points="26,31 37,37 45,40" fill="none" stroke="${s}" stroke-width="2.2"/>`,
@@ -1925,20 +2059,133 @@
         eat: `<rect x="46" y="42" width="44" height="4" rx="2" fill="#BC8A5F" stroke="${s}" stroke-width="1.6"/><ellipse cx="68" cy="39" rx="12" ry="3.5" fill="#FFF" stroke="${s}" stroke-width="1.6"/><circle cx="65" cy="36" r="3.5" fill="${warm}"/><circle cx="71" cy="36" r="3" fill="${acc}"/>${person(26)}<polyline points="26,31 40,34 55,38" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         medicine: `<rect x="52" y="24" width="22" height="12" rx="6" fill="#FFCCD5" stroke="${s}" stroke-width="1.6"/><polygon points="78,24 88,24 86,36 80,36" fill="#BDE0FE" stroke="${s}" stroke-width="1.6"/>${person(28)}<polyline points="28,32 41,31 52,30" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         shower: `<path d="M 84 58 L 84 13 Q 84 9 76 9 L 64 9" fill="none" stroke="${s}" stroke-width="2.3"/><line x1="60" y1="17" x2="55" y2="27" stroke="${w}" stroke-width="1.6" stroke-dasharray="3,2"/><line x1="66" y1="17" x2="64" y2="28" stroke="${w}" stroke-width="1.6" stroke-dasharray="3,2"/>${person(38)}`,
+        towel: `<line x1="56" y1="20" x2="88" y2="20" stroke="${s}" stroke-width="2.5" stroke-linecap="round"/><rect x="61" y="20" width="22" height="28" rx="3" fill="#A7F3D0" stroke="${s}" stroke-width="1.8"/><line x1="61" y1="42" x2="83" y2="42" stroke="${acc}" stroke-width="2"/>${person(27)}<polyline points="27,31 42,29 57,26" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         teeth: `<line x1="42" y1="23" x2="60" y2="21" stroke="${w}" stroke-width="2.5" stroke-linecap="round"/>${person(28)}<polyline points="28,32 42,30 49,23" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         clothes: `<polygon points="56,23 82,23 85,31 79,33 77,29 77,44 61,44 61,29 59,33 53,31" fill="#A8DADC" stroke="${s}" stroke-width="1.6"/>${person(26)}<polyline points="26,32 40,31 53,30" fill="none" stroke="${s}" stroke-width="2.2"/>`,
+        shoes_door: `<rect x="64" y="13" width="24" height="45" rx="2" fill="#E6CCB2" stroke="${s}" stroke-width="2"/><circle cx="69" cy="37" r="2" fill="${s}"/><ellipse cx="48" cy="55" rx="7" ry="3.5" fill="#E07A5F" stroke="${s}" stroke-width="1.5"/>${person(26)}<polyline points="26,32 42,35 62,37" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         stretch: `${hd(48, 22)}<line x1="48" y1="30" x2="48" y2="46" stroke="${s}" stroke-width="2.3"/><line x1="48" y1="46" x2="41" y2="59" stroke="${s}" stroke-width="2.3"/><line x1="48" y1="46" x2="55" y2="59" stroke="${s}" stroke-width="2.3"/><polyline points="35,15 41,26 48,33 55,26 61,15" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         walk: `<circle cx="82" cy="14" r="6" fill="#FFD166" stroke="${s}" stroke-width="1.6"/><circle cx="67.5" cy="31" r="11" fill="#81B29A" stroke="${s}" stroke-width="1.8"/><line x1="8" y1="59" x2="92" y2="59" stroke="${s}" stroke-width="1.8"/>${person(32)}<polyline points="22,33 32,29 42,35" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         early: `<circle cx="72" cy="23" r="13" fill="#FFF" stroke="${s}" stroke-width="2"/><text x="56" y="47" font-size="9.5" font-weight="800" fill="${acc}">-10 min</text>${person(30)}<polyline points="30,30 44,32" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         breathe: `<path d="M 56 26 Q 66 22 72 26 Q 78 30 84 26" fill="none" stroke="${w}" stroke-width="2"/><path d="M 58 34 Q 68 30 74 34 Q 80 38 86 34" fill="none" stroke="${acc}" stroke-width="2"/>${person(32)}`,
         window: `<rect x="54" y="13" width="32" height="30" rx="2" fill="#D8F3DC" stroke="${s}" stroke-width="1.8"/><line x1="70" y1="13" x2="70" y2="43" stroke="${s}" stroke-width="1.6"/>${person(26)}<polyline points="26,32 39,29 52,25" fill="none" stroke="${s}" stroke-width="2.2"/>`,
         rest: `<rect x="26" y="42" width="56" height="14" rx="5" fill="#D4A373" stroke="${s}" stroke-width="1.8"/>${hd(39, 27)}<polyline points="44,33 56,42 74,42" fill="none" stroke="${s}" stroke-width="2.3"/>`,
-        sleep: `<rect x="22" y="44" width="66" height="12" rx="3" fill="#8D99AE" stroke="${s}" stroke-width="1.8"/><path d="M 42 44 Q 62 37 86 44 Z" fill="#A8DADC" stroke="${s}" stroke-width="1.5"/>${hd(33, 32)}`
+        sleep: `<rect x="22" y="44" width="66" height="12" rx="3" fill="#8D99AE" stroke="${s}" stroke-width="1.8"/><path d="M 42 44 Q 62 37 86 44 Z" fill="#A8DADC" stroke="${s}" stroke-width="1.5"/>${hd(33, 32)}`,
+        celebrate: `${hd(45, 22)}<line x1="45" y1="30" x2="45" y2="46" stroke="${s}" stroke-width="2.3"/><line x1="45" y1="46" x2="38" y2="59" stroke="${s}" stroke-width="2.3"/><line x1="45" y1="46" x2="52" y2="59" stroke="${s}" stroke-width="2.3"/><polyline points="31,14 38,26 45,32 52,26 59,14" fill="none" stroke="${s}" stroke-width="2.2"/><text x="66" y="28" font-size="16">⭐</text>`
       };
 
       const doneMark = isDone ? `<text x="6" y="15" font-size="10">✅</text>` : "";
       return `<svg viewBox="0 0 100 64" xmlns="http://www.w3.org/2000/svg">${scenes[key] || scenes.table}${doneMark}</svg>`;
     }
+
+    // =========================================================================
+    // 3B. START-TO-FINISH ACTION PICTURE CARD SEQUENCES (ALUSTA LOPPUUN)
+    // =========================================================================
+    const ACTION_SEQUENCES = [
+      {
+        id: "seq_shower",
+        label: "🚿 Suihku",
+        title: "Suihkussa käynti alusta loppuun",
+        totalPts: 60,
+        steps: [
+          { title: "Pyyhe & vaatteet esille", scene: "clothes" },
+          { title: "Mene suihkuun & peseydy", scene: "shower" },
+          { title: "Kuivaa & pue puhtaat", scene: "towel" },
+          { title: "Pyyhe kuivumaan – Valmis!", scene: "celebrate" }
+        ]
+      },
+      {
+        id: "seq_kitchen",
+        label: "🍽️ Keittiö",
+        title: "Keittiö ja tiskit alusta loppuun",
+        totalPts: 75,
+        steps: [
+          { title: "Kerää astiat pöydältä", scene: "dishes" },
+          { title: "Astiat koneeseen / tiskiin", scene: "dishwasher_in" },
+          { title: "Pyyhi pöytätaso", scene: "table" },
+          { title: "Roskat kiinni – Valmis!", scene: "trash" }
+        ]
+      },
+      {
+        id: "seq_room",
+        label: "🧹 Siivous",
+        title: "Huoneen siivous alusta loppuun",
+        totalPts: 95,
+        steps: [
+          { title: "Kerää roskat pussiin", scene: "trash" },
+          { title: "Vaatteet koriin / kaappiin", scene: "laundry_out" },
+          { title: "Siivoa pöytä ja lattia", scene: "floor" },
+          { title: "Tuuleta huone – Valmis!", scene: "window" }
+        ]
+      },
+      {
+        id: "seq_laundry",
+        label: "🧺 Pyykit",
+        title: "Pyykkihuolto alusta loppuun",
+        totalPts: 65,
+        steps: [
+          { title: "Kerää pyykit koriin", scene: "laundry_out" },
+          { title: "Täytä ja käynnistä kone", scene: "laundry_in" },
+          { title: "Ripusta pyykit kuivumaan", scene: "laundry_hang" },
+          { title: "Viikkaa kaappiin – Valmis!", scene: "clothes" }
+        ]
+      },
+      {
+        id: "seq_study",
+        label: "📚 Opiskelu",
+        title: "Opiskeluhetki alusta loppuun",
+        totalPts: 55,
+        steps: [
+          { title: "Lasi vettä & puhelin pois", scene: "water" },
+          { title: "Avaa kirja tai tehtävä s. 1", scene: "study" },
+          { title: "Tee yksi pieni osio", scene: "work" },
+          { title: "Sulje kirja & tauko – Valmis!", scene: "rest" }
+        ]
+      },
+      {
+        id: "seq_meal",
+        label: "🍳 Ruokailu",
+        title: "Ateria tai välipala alusta loppuun",
+        totalPts: 45,
+        steps: [
+          { title: "Juo lasi vettä ensin", scene: "water" },
+          { title: "Ota ruoka & lautanen", scene: "eat" },
+          { title: "Syö rauhassa loppuun", scene: "eat" },
+          { title: "Astiat tiskiin – Valmis!", scene: "dishes" }
+        ]
+      },
+      {
+        id: "seq_leave",
+        label: "🚪 Lähtö",
+        title: "Ulos lähteminen alusta loppuun",
+        totalPts: 100,
+        steps: [
+          { title: "Avaimet & puhelin mukaan", scene: "keys_phone" },
+          { title: "Pakkaa laukku / reppu", scene: "backpack" },
+          { title: "Pue takki ja kengät", scene: "shoes_door" },
+          { title: "Ovi lukkoon & matkaan!", scene: "early" }
+        ]
+      },
+      {
+        id: "seq_evening",
+        label: "🌙 Ilta",
+        title: "Iltatoimet alusta loppuun",
+        totalPts: 50,
+        steps: [
+          { title: "Tavarat valmiiksi aamuun", scene: "backpack" },
+          { title: "Harjaa hampaat", scene: "teeth" },
+          { title: "Tuuleta & himmennä valot", scene: "window" },
+          { title: "Peiton alle lepäämään!", scene: "sleep" }
+        ]
+      }
+    ];
+
+    const LAST_CARD_COLOR_THEMES = [
+      { name: "Kulta", bg: "#FEF08A", border: "#D97706", text: "#3B1A04" },
+      { name: "Smaragdi", bg: "#A7F3D0", border: "#059669", text: "#064E3B" },
+      { name: "Taivas", bg: "#BAE6FD", border: "#0284C7", text: "#0C4A6E" },
+      { name: "Laventeli", bg: "#E9D5FF", border: "#7C3AED", text: "#3B0764" },
+      { name: "Persikka", bg: "#FED7AA", border: "#EA580C", text: "#431407" }
+    ];
 
     const PICTURE_CATEGORIES = [
       {
@@ -2058,9 +2305,9 @@
     }
 
     // =========================================================================
-    // 5. STATE & PERSISTENCE (STARTS AT 0 COINS, LEVEL 1)
+    // 5. STATE & PERSISTENCE
     // =========================================================================
-    const STORAGE_KEY = "pesakolo_v35";
+    const STORAGE_KEY = "pesakolo_v36";
     const dayKeys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
     const dayLabels = [
       { k: "mon", n: "Ma" }, { k: "tue", n: "Ti" }, { k: "wed", n: "Ke" },
@@ -2101,6 +2348,8 @@
       totalEarned: 0,
       companion: "dog",
       realityIdx: 0,
+      activeSeqId: "seq_shower",
+      seqProgress: {},
       outdoorDest: "school",
       outdoorSteps: [false, false, false, false, false],
       dayTasks: createDefaultTasks(),
@@ -2130,6 +2379,8 @@
     let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultState;
     if (typeof state.points !== "number") state.points = 0;
     if (typeof state.totalEarned !== "number") state.totalEarned = state.points;
+    if (!state.activeSeqId) state.activeSeqId = "seq_shower";
+    if (!state.seqProgress) state.seqProgress = {};
     if (!state.outdoorSteps || state.outdoorSteps.length < 5) state.outdoorSteps = [false, false, false, false, false];
     if (!state.unlocked.dollhouse) state.unlocked.dollhouse = ["ikkuna"];
     if (!state.memories) state.memories = defaultState.memories;
@@ -2376,8 +2627,146 @@
     });
 
     // =========================================================================
-    // 10. TAB 1: ⚡ TEOT (5-STEP OUTING TRAIL, 28 PICTURE CARDS, DAY TASKS)
+    // 10. TAB 1: ⚡ TEOT (START-TO-FINISH SEQUENCES, OUTING TRAIL, PICTURE CARDS)
     // =========================================================================
+    function getSeqRecord(seqId, len) {
+      if (!state.seqProgress[seqId] || !Array.isArray(state.seqProgress[seqId].done)) {
+        state.seqProgress[seqId] = {
+          done: new Array(len).fill(false),
+          lastColorIdx: -1
+        };
+      }
+      return state.seqProgress[seqId];
+    }
+
+    function renderStartToFinishSequences() {
+      const seq = ACTION_SEQUENCES.find(s => s.id === state.activeSeqId) || ACTION_SEQUENCES[0];
+      const rec = getSeqRecord(seq.id, seq.steps.length);
+
+      document.getElementById("seqChainPills").innerHTML = ACTION_SEQUENCES.map(s =>
+        `<button type="button" class="filter-pill ${s.id === seq.id ? "active" : ""}" onclick="selectActionSeq('${s.id}', event)">${s.label}</button>`
+      ).join("");
+
+      const doneCount = rec.done.filter(Boolean).length;
+      const pct = Math.round((doneCount / seq.steps.length) * 100);
+      document.getElementById("seqProgressFill").style.width = pct + "%";
+
+      const firstUndoneIdx = rec.done.findIndex(d => !d);
+      const track = document.getElementById("seqCardsTrack");
+      track.innerHTML = "";
+
+      seq.steps.forEach((step, idx) => {
+        const isLast = idx === seq.steps.length - 1;
+        const isDone = !!rec.done[idx];
+        const isNext = idx === firstUndoneIdx;
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "seq-pic-card"
+          + (isDone && !isLast ? " step-done" : "")
+          + (isNext ? " next-up" : "")
+          + (isLast ? " is-last" : "")
+          + (isLast && rec.lastColorIdx >= 0 ? " last-colored" : "");
+
+        if (isLast && rec.lastColorIdx >= 0) {
+          const theme = LAST_CARD_COLOR_THEMES[rec.lastColorIdx % LAST_CARD_COLOR_THEMES.length];
+          btn.style.backgroundColor = theme.bg;
+          btn.style.borderColor = theme.border;
+          btn.style.color = theme.text;
+        }
+
+        const roleLabel = idx === 0
+          ? "1. Alku"
+          : isLast
+          ? `${idx + 1}. Loppu 🏁`
+          : `${idx + 1}. Vaihe`;
+
+        const statusBadge = isLast && rec.lastColorIdx >= 0
+          ? `<span>🎨 ${LAST_CARD_COLOR_THEMES[rec.lastColorIdx % LAST_CARD_COLOR_THEMES.length].name}</span>`
+          : isDone
+          ? `<span>✓</span>`
+          : isLast
+          ? `<span class="coin">${Math.max(15, seq.totalPts - (seq.steps.length - 1) * 5)}</span>`
+          : `<span class="coin">5</span>`;
+
+        btn.innerHTML = `
+          <div class="seq-step-badge">
+            <span>${roleLabel}</span>
+            ${statusBadge}
+          </div>
+          <div class="seq-pic-card-svg">${getComicSVG(step.scene, isDone)}</div>
+          <div class="seq-pic-card-label">${escapeHtml(step.title)}</div>
+        `;
+
+        btn.onclick = (e) => {
+          if (isLast) {
+            const wasDone = rec.done[idx];
+            rec.done[idx] = true;
+            rec.lastColorIdx = (rec.lastColorIdx + 1) % LAST_CARD_COLOR_THEMES.length;
+            saveState();
+            renderStartToFinishSequences();
+
+            const theme = LAST_CARD_COLOR_THEMES[rec.lastColorIdx];
+            if (!wasDone) {
+              const finishPts = Math.max(15, seq.totalPts - (seq.steps.length - 1) * 5);
+              addPoints(finishPts, `Koko ketju valmis! (${theme.name})`, e);
+              triggerJoyfulTailWag(null, false);
+            } else {
+              playTone(680, 0.14);
+              showToast(`Viimeisen kortin väri: ${theme.name}`);
+            }
+          } else {
+            rec.done[idx] = !rec.done[idx];
+            saveState();
+            renderStartToFinishSequences();
+            if (rec.done[idx]) {
+              addPoints(5, null, e);
+            }
+          }
+        };
+
+        track.appendChild(btn);
+      });
+    }
+
+    window.selectActionSeq = (id, e) => {
+      state.activeSeqId = id;
+      saveState();
+      renderStartToFinishSequences();
+      addPoints(1, null, e);
+    };
+
+    document.getElementById("resetSeqBtn").onclick = (e) => {
+      const seq = ACTION_SEQUENCES.find(s => s.id === state.activeSeqId) || ACTION_SEQUENCES[0];
+      state.seqProgress[seq.id] = {
+        done: new Array(seq.steps.length).fill(false),
+        lastColorIdx: -1
+      };
+      saveState();
+      renderStartToFinishSequences();
+      addPoints(1, null, e);
+      showToast("Kuvakorttiketju nollattu alkuun!");
+    };
+
+    document.getElementById("addSeqToDayBtn").onclick = (e) => {
+      const seq = ACTION_SEQUENCES.find(s => s.id === state.activeSeqId) || ACTION_SEQUENCES[0];
+      if (!state.dayTasks[selectedDayKey]) state.dayTasks[selectedDayKey] = [];
+      state.dayTasks[selectedDayKey].unshift({
+        id: Date.now() + Math.random(),
+        text: seq.title,
+        scene: seq.steps[0].scene,
+        pts: seq.totalPts,
+        done: false,
+        isChain: true,
+        steps: seq.steps.map(st => ({ title: st.title, scene: st.scene, done: false })),
+        lastColorIdx: -1
+      });
+      saveState();
+      renderDayTasks();
+      addPoints(2, `Ketju lisätty päivälle: ${seq.title}`, e);
+    };
+
+    // Outing Trail
     const DEST_META = {
       school: { label: "Oppilaitos", icon: "🏫" },
       work: { label: "Työpaikka", icon: "🏢" },
@@ -2540,6 +2929,87 @@
       }
 
       tasks.forEach(t => {
+        if (t.isChain && Array.isArray(t.steps)) {
+          const row = document.createElement("div");
+          row.className = "task-row chain-task-row" + (t.done ? " done" : "");
+
+          const header = document.createElement("div");
+          header.style.cssText = "display:flex; align-items:center; justify-content:space-between; gap:8px;";
+          header.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <strong class="task-title">🪜 ${escapeHtml(t.text)}</strong>
+              <span class="coin">${t.pts}</span>
+            </div>
+            <button type="button" class="del-btn" title="Poista">✕</button>
+          `;
+          header.querySelector(".del-btn").onclick = () => {
+            state.dayTasks[selectedDayKey] = state.dayTasks[selectedDayKey].filter(x => x.id !== t.id);
+            saveState();
+            renderDayTasks();
+          };
+          row.appendChild(header);
+
+          const strip = document.createElement("div");
+          strip.className = "mini-chain-strip";
+
+          t.steps.forEach((st, sIdx) => {
+            const isLast = sIdx === t.steps.length - 1;
+            const cIdx = typeof t.lastColorIdx === "number" ? t.lastColorIdx : -1;
+            const cardBtn = document.createElement("button");
+            cardBtn.type = "button";
+            cardBtn.className = "seq-pic-card"
+              + (st.done && !isLast ? " step-done" : "")
+              + (isLast ? " is-last" : "")
+              + (isLast && cIdx >= 0 ? " last-colored" : "");
+
+            if (isLast && cIdx >= 0) {
+              const theme = LAST_CARD_COLOR_THEMES[cIdx % LAST_CARD_COLOR_THEMES.length];
+              cardBtn.style.backgroundColor = theme.bg;
+              cardBtn.style.borderColor = theme.border;
+              cardBtn.style.color = theme.text;
+            }
+
+            cardBtn.innerHTML = `
+              <div class="seq-step-badge">
+                <span>${isLast ? `${sIdx + 1}. Loppu 🏁` : `${sIdx + 1}. Vaihe`}</span>
+                <span>${st.done ? "✓" : ""}</span>
+              </div>
+              <div class="seq-pic-card-svg">${getComicSVG(st.scene, st.done)}</div>
+              <div class="seq-pic-card-label">${escapeHtml(st.title)}</div>
+            `;
+
+            cardBtn.onclick = (e) => {
+              if (isLast) {
+                const wasTaskDone = t.done;
+                st.done = true;
+                t.done = true;
+                t.lastColorIdx = ((typeof t.lastColorIdx === "number" ? t.lastColorIdx : -1) + 1) % LAST_CARD_COLOR_THEMES.length;
+                saveState();
+                renderDayTasks();
+                const theme = LAST_CARD_COLOR_THEMES[t.lastColorIdx];
+                if (!wasTaskDone) {
+                  addPoints(t.pts, `Ketju tehty: ${t.text} (${theme.name})`, e);
+                  triggerJoyfulTailWag(null, false);
+                } else {
+                  playTone(680, 0.14);
+                  showToast(`Viimeisen kortin väri: ${theme.name}`);
+                }
+              } else {
+                st.done = !st.done;
+                saveState();
+                renderDayTasks();
+                if (st.done) addPoints(2, null, e);
+              }
+            };
+
+            strip.appendChild(cardBtn);
+          });
+
+          row.appendChild(strip);
+          list.appendChild(row);
+          return;
+        }
+
         const row = document.createElement("div");
         row.className = "task-row" + (t.done ? " done" : "");
         row.innerHTML = `
@@ -2591,7 +3061,13 @@
     };
 
     document.getElementById("resetDayChecksBtn").onclick = () => {
-      (state.dayTasks[selectedDayKey] || []).forEach(t => t.done = false);
+      (state.dayTasks[selectedDayKey] || []).forEach(t => {
+        t.done = false;
+        if (t.isChain && Array.isArray(t.steps)) {
+          t.steps.forEach(st => st.done = false);
+          t.lastColorIdx = -1;
+        }
+      });
       state.outdoorSteps = [false, false, false, false, false];
       saveState();
       renderDayTasks();
@@ -2743,7 +3219,7 @@
     let breathingActive = false;
     let breathCycleIdx = 0;
     let breathInhale = true;
-    const BREATH_STEPS = [4, 5, 6]; // 1. kierros 4 s, 2. kierros 5 s, 3.+ kierros 6 s
+    const BREATH_STEPS = [4, 5, 6];
 
     function stepProgressiveBreath() {
       if (!breathingActive) return;
@@ -3043,7 +3519,6 @@
       });
     }
 
-    // Past Memory Diary & Future Dream Book Switcher
     let activeBookMode = "memory";
     let selectedBookIcon = "🌱";
 
@@ -3072,6 +3547,7 @@
         titleInp.placeholder = "Muiston otsikko...";
         noteInp.placeholder = "Kirjoita lämmin muisto tai onnistuminen...";
         saveBtn.className = "btn btn-warm";
+        saveBtn.style.background = "";
         saveBtn.innerHTML = `🕰️ Tallenna muistelupäiväkirjaan <span class="coin">10</span>`;
       } else {
         whenInp.placeholder = "Milloin, esim. Ensi kesänä";
@@ -3374,7 +3850,6 @@
               </linearGradient>
             </defs>
             <rect x="0" y="0" width="640" height="310" fill="url(#aqGrad)"/>
-            <!-- Treasure Chest with Star Goals -->
             <text x="530" y="275" font-size="40">🧰</text>
             ${has("koralli") ? `<text x="240" y="255" font-size="44">🪸</text><text x="450" y="260" font-size="38">🪸</text>` : ""}
             ${has("meritahti") ? `<text x="330" y="282" font-size="30">⭐</text><text x="400" y="278" font-size="28">🐚</text>` : ""}
@@ -3438,7 +3913,6 @@
         `;
       }
 
-      // Render Shop Items
       const shopGrid = document.getElementById("worldShopGrid");
       shopGrid.innerHTML = "";
 
@@ -3551,6 +4025,7 @@
     updatePointsAndLevelUI();
     renderRealityAnchor();
     renderCompanionEverywhere();
+    renderStartToFinishSequences();
     renderOutingTrail();
     renderDayAndCatPills();
     renderPictureCards();
